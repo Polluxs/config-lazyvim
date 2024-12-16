@@ -4,6 +4,10 @@ return {
     "stevearc/oil.nvim",
     opts = {
       default_file_explorer = true,
+      filter_func = function(name, path)
+        -- Show all files, including hidden (dotfiles)
+        return true
+      end,
     },
     dependencies = { "nvim-tree/nvim-web-devicons" },
     keys = {

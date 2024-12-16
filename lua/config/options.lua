@@ -19,3 +19,6 @@ local opts = { noremap = true, silent = true }
 
 -- MAPPINGS: impl
 map("x", "p", '"_dP', opts)
+
+-- private options
+require("config/private-options")
