@@ -21,3 +21,6 @@ vim.api.nvim_set_keymap("n", "{", "}", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "}", "{", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "{", "}", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "}", "{", { noremap = true, silent = true })
+
+-- also comment with Command + /
+vim.keymap.set({ "n", "v" }, "<D-/>", "gcc", { remap = true })
