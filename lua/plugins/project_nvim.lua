@@ -10,6 +10,7 @@ return {
       "~/code/time_hacking/*",
       "~/code/templates/*",
       "~/.config/nvim/*",
+      "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes",
     },
     -- Load the most recent session on startup if not in the project directory
     last_session_on_startup = true,
