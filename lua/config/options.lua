@@ -1,6 +1,7 @@
 -- generic
-vim.opt.tabstop = 4
-vim.opt.scrolloff = 15
+vim.o.tabstop = 3
+vim.o.shiftwidth = 3
+vim.o.scrolloff = 15
 vim.o.clipboard = "unnamedplus"
 vim.o.guifont = "FiraCode Nerd Font Med"
 vim.g.neovide_scale_factor = 1.4
@@ -13,11 +14,23 @@ vim.cmd([[
   augroup END
 ]])
 
+---@diagnostic disable-next-line: unused-local, unused-function
+local function reload_config()
+  for name, _ in pairs(package.loaded) do
+    if name:match("^config") then
+      package.loaded[name] = nil
+    end
+  end
+  dofile(vim.env.MYVIMRC)
+  print("Configuration reloaded!")
+end
+
 -- MAPPINGS: methods
 local map = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
 
 -- MAPPINGS: impl
+map("n", "<leader>rr", ":lua reload_config()<CR>", opts)
 map("x", "p", '"_dP', opts)
 
 -- private options
