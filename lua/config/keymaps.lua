@@ -16,7 +16,7 @@ vim.api.nvim_set_keymap("!", "<D-v>", "<C-R>+", { noremap = true, silent = true 
 vim.api.nvim_set_keymap("t", "<D-v>", "<C-R>+", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "<D-v>", "<C-R>+", { noremap = true, silent = true })
 
--- Switch `{` and `}` navigation
+-- Switch `{` and `}` navigation to be consistent with `j` and `k`
 vim.api.nvim_set_keymap("n", "{", "}", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "}", "{", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "{", "}", { noremap = true, silent = true })
