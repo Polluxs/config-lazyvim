@@ -24,3 +24,14 @@ vim.api.nvim_set_keymap("v", "}", "{", { noremap = true, silent = true })
 
 -- also comment with Command + /
 vim.keymap.set({ "n", "v" }, "<D-/>", "gcc", { remap = true })
+
+local which_key = require("which-key")
+
+-- show code errors
+vim.api.nvim_set_keymap("n", "<leader>ce", "<cmd>Telescope diagnostics<CR>", { noremap = true, silent = true })
+which_key.add({
+  ["<leader>c"] = {
+    name = "Code",
+    e = { "<cmd>Telescope diagnostics<CR>", "Show all LSP errors" },
+  },
+})
