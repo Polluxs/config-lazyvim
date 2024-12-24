@@ -19,6 +19,10 @@ vim.api.nvim_set_keymap("!", "<D-v>", "<C-R>+", { noremap = true, silent = true 
 vim.api.nvim_set_keymap("t", "<D-v>", "<C-R>+", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "<D-v>", "<C-R>+", { noremap = true, silent = true })
 
+-- use Ctrl-E for visual mode inside terminal instead of Ctrl-\ + Ctrl-n
+-- tried mapping it to ESC but that didn't work
+vim.api.nvim_set_keymap("t", "<C-e>", "<C-\\><C-n>", { noremap = true, silent = true })
+
 -- also comment with Command + /
 vim.keymap.set({ "n", "v" }, "<D-/>", "gcc", { remap = true })
 
