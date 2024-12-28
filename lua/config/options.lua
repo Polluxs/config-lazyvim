@@ -6,7 +6,9 @@ vim.o.clipboard = "unnamedplus"
 vim.o.guifont = "FiraCode Nerd Font Med"
 vim.g.neovide_scale_factor = 1.4
 
--- Don't show safe messages as notification
+-- Suppress certain messages to reduce notification clutter, such as completion messages.
+-- This can improve focus by minimizing distractions. Other impacts include reducing the
+-- verbosity of messages during operations like file saving or buffer switching.
 vim.opt.shortmess:append("c")
 
 -- Automatically set file type to markdown for .md and .MD files
