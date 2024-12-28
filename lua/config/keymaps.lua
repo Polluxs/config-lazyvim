@@ -65,9 +65,40 @@ which_key.add({
 
 -- show code errors
 vim.api.nvim_set_keymap("n", "<leader>ce", "<cmd>Telescope diagnostics<CR>", { noremap = true, silent = true })
+-- TODO: PR this into avante with something like "Can you fix this on Line: XX -> "
+local function yank_current_diagnostic()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local line = cursor[1] - 1
+  local col = cursor[2]
+
+  -- Get all diagnostics at current line
+  local diagnostics = vim.diagnostic.get(0, { lnum = line })
+
+  -- Filter diagnostics to find the closest one to cursor position
+  local closest_diagnostic = nil
+  local min_distance = math.huge
+
+  for _, diagnostic in ipairs(diagnostics) do
+    local distance = math.abs(diagnostic.col - col)
+    if distance < min_distance then
+      min_distance = distance
+      closest_diagnostic = diagnostic
+    end
+  end
+
+  if closest_diagnostic then
+    vim.fn.setreg("+", closest_diagnostic.message)
+    vim.notify("Copied diagnostic: " .. closest_diagnostic.message, vim.log.levels.INFO)
+  else
+    vim.notify("No diagnostic found at cursor position", vim.log.levels.WARN)
+  end
+end
+vim.keymap.set("n", "<leader>cy", yank_current_diagnostic, { desc = "Yank current line's LSP error" })
+
 which_key.add({
   ["<leader>c"] = {
     name = "Code",
     e = { "<cmd>Telescope diagnostics<CR>", "Show all LSP errors" },
+    y = { yank_current_diagnostic, "Yank current line's LSP error" },
   },
 })
