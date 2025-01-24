@@ -102,3 +102,11 @@ which_key.add({
     y = { yank_current_diagnostic, "Yank current line's LSP error" },
   },
 })
+
+-- Find words
+vim.keymap.set("n", "<leader>fw", "<cmd>Telescope live_grep<CR>", { desc = "Find words in project" })
+which_key.add({
+  ["<leader>f"] = {
+    w = { "<cmd>Telescope live_grep<CR>", "Find words in project" },
+  },
+})
