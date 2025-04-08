@@ -1,9 +1,9 @@
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 --
---###############
---#   utility   #
---###############
+--=============
+-- Compatibility with OS
+--=============
 if vim.g.neovide then
   vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
   vim.keymap.set("v", "<D-c>", '"+y') -- Copy
@@ -19,6 +19,9 @@ vim.api.nvim_set_keymap("!", "<D-v>", "<C-R>+", { noremap = true, silent = true 
 vim.api.nvim_set_keymap("t", "<D-v>", "<C-R>+", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "<D-v>", "<C-R>+", { noremap = true, silent = true })
 
+--=============
+-- Utility
+--=============
 -- use Ctrl-E for visual mode inside terminal instead of Ctrl-\ + Ctrl-n
 -- tried mapping it to ESC but that didn't work
 vim.api.nvim_set_keymap("t", "<C-e>", "<C-\\><C-n>", { noremap = true, silent = true })
@@ -26,9 +29,9 @@ vim.api.nvim_set_keymap("t", "<C-e>", "<C-\\><C-n>", { noremap = true, silent = 
 -- also comment with Command + /
 vim.keymap.set({ "n", "v" }, "<D-/>", "gcc", { remap = true })
 
---###############
---#  navigation #
---###############
+--=============
+-- Navigation
+--=============
 
 -- Switch `{` and `}` navigation to be consistent with `j` and `k`
 vim.api.nvim_set_keymap("n", "{", "}", { noremap = true, silent = true })
@@ -36,9 +39,9 @@ vim.api.nvim_set_keymap("n", "}", "{", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "{", "}", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("v", "}", "{", { noremap = true, silent = true })
 
---###############
---#   plugins   #
---###############
+--=============
+-- Obsidian
+--=============
 local which_key = require("which-key")
 
 -- Key mappings for Obsidian.nvim commands
@@ -63,6 +66,9 @@ which_key.add({
   },
 })
 
+--=============
+-- CODE
+--=============
 -- show code errors
 vim.api.nvim_set_keymap("n", "<leader>ce", "<cmd>Telescope diagnostics<CR>", { noremap = true, silent = true })
 -- TODO: PR this into avante with something like "Can you fix this on Line: XX -> "
@@ -110,3 +116,52 @@ which_key.add({
     w = { "<cmd>Telescope live_grep<CR>", "Find words in project" },
   },
 })
+
+--=============
+-- BUFFERS
+--=============
+
+local harpoon = require("harpoon")
+vim.keymap.del("n", "<leader>bp") -- remove buffer pin
+
+-- remove buffer clear all but Pin
+vim.keymap.del("n", "<leader>bP")
+-- Add functionality to close all buffers except those in Harpoon
+vim.keymap.set("n", "<leader>bc", function()
+  local buffers = vim.api.nvim_list_bufs()
+  local harpoon_list = harpoon:list()
+  local current_buf = vim.api.nvim_get_current_buf()
+
+  -- Collect all harpoon file paths
+  local harpoon_paths = {}
+  for idx = 1, harpoon_list:length() do
+    local item = harpoon_list:get(idx)
+    if item and item.value then
+      -- Store the full, normalized path
+      harpoon_paths[vim.fn.fnamemodify(item.value, ":p")] = true
+    end
+  end
+
+  -- Process each buffer
+  for _, buf in ipairs(buffers) do
+    -- Skip the current buffer
+    if buf ~= current_buf and vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buflisted then
+      local buf_path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":p")
+
+      -- Close buffer if it's not in harpoon list
+      if not harpoon_paths[buf_path] then
+        if vim.fn.getbufinfo(buf)[1].changed == 0 then
+          vim.api.nvim_buf_delete(buf, { force = false })
+        else
+          vim.notify("Buffer " .. vim.api.nvim_buf_get_name(buf) .. " has unsaved changes", vim.log.levels.WARN)
+        end
+      end
+    end
+  end
+end, { desc = "Clear all buffers except Harpoon or current buff" })
+
+-- Delete LazyVim's default <leader>bb mapping to allow Harpoon to use it
+vim.keymap.del("n", "<leader>bb")
+vim.keymap.set("n", "<leader>bb", function()
+  harpoon.ui:toggle_quick_menu(harpoon:list())
+end, { desc = "Toggle Harpoon menu" })
